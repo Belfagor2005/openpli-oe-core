@@ -113,12 +113,12 @@ inherit gitpkgv setuptools3 python3targetconfig
 PV = "${PYTHON_BASEVERSION}+git"
 PKGV = "${PYTHON_BASEVERSION}+git${GITPKGV}"
 
-ENIGMA2_BRANCH ?= "scarthgap"
+ENIGMA2_BRANCH ?= "corvoboys"
 
 # make the origin overridable from OE config, for local mirroring
-SRC_ORIGIN ?= "git://github.com/Belfagor2005/enigma2pli.git;protocol=https"
+SRC_ORIGIN ?= "git://github.com/Belfagor2005/enigma2pli.git;protocol=ssh"
 SRC_URI := " ${SRC_ORIGIN};branch=${ENIGMA2_BRANCH}"
-# SRC_ORIGIN ?= "git://github.com/OpenPLi/enigma2.git;protocol=https"
+# SRC_ORIGIN ?= "git://github.com/OpenPLi/enigma2.git;protocol=ssh"
 
 LDFLAGS:prepend = " -lxml2 "
 
