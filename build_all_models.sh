@@ -1,0 +1,378 @@
+#!/bin/bash
+
+## 20250120  script bash by Lululla for make images
+## Modified to support batch building of 131 models
+
+# ===== CONFIGURAZIONE =====
+BUILD_VERSION="07"  # <-- IMPOSTA QUI LA VERSIONE DELLA BUILD
+BUILD_NAME="corvoboys"
+# ==========================
+# Controllo tools richiesti
+check_tools() {
+    local tools="chrpath lz4c pzstd unzstd zstd java svn"
+    local missing=""
+    for t in $tools; do
+        if ! command -v $t >/dev/null 2>&1; then
+            missing="$missing $t"
+        fi
+    done
+    if [ -n "$missing" ]; then
+        print_message "error" "Tools mancanti:$missing"
+        echo "Installa: sudo apt-get install -y chrpath lz4 zstd default-jre subversion"
+        return 1
+    fi
+    return 0
+}
+
+# Chiama controllo all inizio dello script
+if ! check_tools; then
+    exit 1
+fi
+
+# Function to show messages with custom colors
+function print_message {
+    local msg_type=$1
+    local msg=$2
+    case $msg_type in
+        "info") echo -e "\033[1;34m[INFO] $msg\033[0m" ;;  # Blue
+        "error") echo -e "\033[1;31m[ERROR] $msg\033[0m" ;;  # Red
+        "success") echo -e "\033[1;32m[SUCCESS] $msg\033[0m" ;;  # Green
+        *) echo "$msg" ;;
+    esac
+}
+
+# Function progress bar
+function progress_bar {
+    local total=$1
+    local current=0
+    while [ $current -le $total ]; do
+        let "progress=($current*100)/$total"
+        echo -n "#"
+        sleep 0.1
+        let "current++"
+    done
+    echo
+}
+
+# Init Cleaning
+rm -f build/bitbake.lock build/bitbake.sock
+print_message "info" "Initializing cleaning..."
+
+# Producers and models
+declare -A PRODUCERS=(
+    [0]="Abcom"
+    [1]="Amiko"
+    [2]="Axas"
+    [3]="Dream"
+    [4]="Edision"
+    [5]="Formuler"
+    [6]="Gfutures"
+    [7]="Gi"
+    [8]="Gigablue"
+    [9]="Maxytec"
+    [10]="Miraclebox"
+    [11]="Octagon"
+    [12]="Qviart"
+    [13]="Sab"
+    [14]="Spycat"
+    [15]="Technomate"
+    [16]="Uclan"
+    [17]="Vuplus"
+    [18]="Xp"
+    [19]="Xpeedc"
+    [20]="Xsarius"
+    [21]="Xtrend"
+    [22]="Zgemma"
+)
+
+# Models for each manufacturer
+# declare -A MODELS_Abcom=([0]="pulse4k" [1]="pulse4kmini")
+# declare -A MODELS_Amiko=([0]="vipercombo" [1]="vipercombohdd" [2]="viperslim" [3]="vipert2c")
+# declare -A MODELS_Axas=([0]="e4hd")
+declare -A MODELS_Dream=([0]="dm8000")  #  [1]="dm500hd" [2]="dm500hdv2" [3]="dm800se" [4]="dm800sev2" [5]="dm520" [6]="dm820" [7]="dm7020hd" [8]="dm7020hdv2" [9]="dm7080" [10]="dm900" [11]="dm920" [12]="dreamone" [13]="dreamtwo")
+# declare -A MODELS_Edision=([0]="osmega" [1]="osmini" [2]="osmini4k" [3]="osminiplus" [4]="osmio4k" [5]="osmio4kplus" [6]="osnino" [7]="osninoplus" [8]="osninopro")
+# declare -A MODELS_Formuler=([0]="formuler1" [1]="formuler3" [2]="formuler4" [3]="formuler4turbo")
+# declare -A MODELS_Gfutures=([0]="bre2ze4k" [1]="hd11" [2]="hd51" [3]="hd60" [4]="hd61" [5]="hd66se" [6]="hd500c" [7]="hd530c" [8]="hd1100" [9]="hd1200" [10]="hd1265" [11]="hd1500" [12]="hd2400" [13]="vs1000" [14]="vs1500")
+# declare -A MODELS_Gi=([0]="et1x000" [1]="et7000mini")
+# declare -A MODELS_Gigablue=([0]="gbquad4k" [1]="gbquad4kpro" [2]="gbtrio4k" [3]="gbue4k")
+declare -A MODELS_Maxytec=([0]="multibox" [1]="multiboxpro" [2]="multiboxse")
+# declare -A MODELS_Miraclebox=([0]="mbmicro" [1]="mbmicrov2" [2]="mbtwinplus")
+declare -A MODELS_Octagon=([0]="sfx6008" [1]="sf8008" [2]="sf8008m" [3]="sx88v2")
+# declare -A MODELS_Qviart=([0]="dual" [1]="lunix" [2]="lunix3-4k" [3]="lunix4k")
+# declare -A MODELS_Sab=([0]="alphatriplehd")
+# declare -A MODELS_Spycat=([0]="spycatmini" [1]="spycat" [2]="spycatminiplus")
+# declare -A MODELS_Technomate=([0]="tmnano3tcombo" [1]="tmnano3tcombo4k")
+# declare -A MODELS_Uclan=([0]="ustym4kpro" [1]="ustym4ks2ottx")
+# # declare -A MODELS_Vuplus=([0]="vuduo" [1]="vuduo2" [2]="vuduo4k" [3]="vuduo4kse" [4]="vusolo" [5]="vusolo2" [6]="vusolo4k" [7]="vusolose" [8]="vuultimo" [9]="vuultimo4k" [10]="vuuno" [11]="vuuno4k" [12]="vuuno4kse" [13]="vuzero" [14]="vuzero4k")
+# declare -A MODELS_Xp=([0]="xp1000")
+# declare -A MODELS_Xpeedc=([0]="xpeedc")
+# declare -A MODELS_Xsarius=([0]="fusionhd" [1]="fusionhdse" [2]="galaxy4k" [3]="purehd" [4]="purehdse" [5]="revo4k")
+# declare -A MODELS_Xtrend=([0]="et4x00" [1]="et5x00" [2]="et6x00" [3]="et7x00" [4]="et8x00" [5]="et9x00" [6]="et8000" [7]="et8500" [8]="et10000")
+# # declare -A MODELS_Zgemma=([0]="sh1" [1]="h3" [2]="h4" [3]="h5" [4]="h6" [5]="h7" [6]="h8" [7]="h9" [8]="h9combo" [9]="h9combose" [10]="h9se" [11]="h10" [13]="h11" [14]="h17" [15]="hzero" [16]="i55" [17]="i55plus" [18]="i55se" [19]="lc")
+
+# Build all models function
+function build_all_models {
+    local build_option=$1
+    local total_models=0
+    local current_model=0
+    
+    # Count total models
+    for producer_index in "${!PRODUCERS[@]}"; do
+        producer_name="${PRODUCERS[$producer_index]}"
+        array_name="MODELS_$producer_name"
+        declare -n model_array=$array_name
+        total_models=$((total_models + ${#model_array[@]}))
+    done
+
+    print_message "info" "Starting batch build for $total_models models..."
+    print_message "info" "Build version: $BUILD_NAME-$BUILD_VERSION"
+    
+    # Main build loop
+    # Carica ambiente build
+    cd build 2>/dev/null || { print_message "error" "Directory build non trovata"; return 1; }
+    source env.source
+    export LANG=C
+    cd ..
+    for producer_index in "${!PRODUCERS[@]}"; do
+        producer_name="${PRODUCERS[$producer_index]}"
+        array_name="MODELS_$producer_name"
+        declare -n model_array=$array_name
+        
+        for model_index in "${!model_array[@]}"; do
+            current_model=$((current_model + 1))
+            model_name="${model_array[$model_index]}"
+            
+            print_message "info" "Building [$current_model/$total_models] ${producer_name} ${model_name}..."
+            
+            # Execute build command
+            if MACHINE="$model_name" make "$build_option"; then
+                print_message "success" "Build succeeded for ${model_name}"
+                
+                # # === INIZIO CODICE RINOMINA ZIP (solo per immagini) ===
+                # if [ "$build_option" = "image" ]; then
+                    # sleep 3
+                    
+                    # # PERCORSO ASSOLUTO - CORRETTO PER WSL
+                    # BASE_PATH="/opt/corvoboys/openpli-oe-core"
+                    # image_path="$BASE_PATH/build/tmp/deploy/images/$model_name"
+                    
+                    # if [ -d "$image_path" ]; then
+                        # # Cerca qualsiasi file ZIP
+                        # for original_zip in "$image_path"/*.zip; do
+                            # if [ -f "$original_zip" ]; then
+                                # original_name=$(basename "$original_zip")
+                                
+                                # # Estrai la parte dopo "openpli-homebuild-" se presente
+                                # if [[ "$original_name" == openpli-homebuild-* ]]; then
+                                    # suffix="${original_name#openpli-homebuild-}"
+                                # else
+                                    # suffix="$original_name"
+                                # fi
+                                
+                                # # Nuovo nome con build version
+                                # new_name="${BUILD_NAME}-${BUILD_VERSION}-${suffix}"
+                                # new_path="$image_path/$new_name"
+                                
+                                # # Rinomina il file
+                                # if mv "$original_zip" "$new_path"; then
+                                    # print_message "success" "  ✓ Rinominato: $new_name"
+                                    
+                                    # # Crea anche un MD5 se esiste
+                                    # md5_file="$original_zip.md5"
+                                    # if [ -f "$md5_file" ]; then
+                                        # new_md5_name="$new_name.md5"
+                                        # new_md5_path="$image_path/$new_md5_name"
+                                        # mv "$md5_file" "$new_md5_path"
+                                        # print_message "success" "  ✓ Rinominato MD5: $new_md5_name"
+                                    # fi
+                                # else
+                                    # print_message "error" "  ✗ Impossibile rinominare $original_name"
+                                # fi
+                                # break  # Processa solo il primo ZIP trovato
+                            # fi
+                        # done
+                    # else
+                        # print_message "error" "  ✗ Directory non trovata: $image_path"
+                    # fi
+                # fi
+                # # === FINE CODICE RINOMINA ZIP ===
+                
+            else
+                print_message "error" "Build FAILED for ${model_name}, continuing..."
+            fi
+            # Show progress
+            echo -n "Progress: "
+            progress_bar $total_models $current_model
+        done
+    done
+    
+    print_message "success" "Batch build completed! $current_model/$total_models models processed"
+}
+
+# Batch build options
+batch_option=$(dialog --stdout --clear --backtitle "Batch Build System" \
+    --menu "Select build option:" 15 50 4 \
+    1 "Build Single Model" \
+    2 "Build All Models (Image)" \
+    3 "Build All Models (Feed)" \
+    4 "Exit")
+
+[ -z "$batch_option" ] && clear && exit 1
+
+case $batch_option in
+    1)  # Single model build (original flow)
+        sorted_producers=($(for p in "${!PRODUCERS[@]}"; do echo "$p ${PRODUCERS[$p]}"; done | sort -k2 | cut -d ' ' -f 1))
+        list=()
+        for i in "${!sorted_producers[@]}"; do
+            list+=("$i" "${PRODUCERS[$i]}")
+        done
+        
+        producer=$(dialog --stdout --clear --backtitle "Model Selection" --menu "Select Producer" 40 50 40 "${list[@]}")
+        [ -z "$producer" ] && clear && exit
+        
+        case ${PRODUCERS[$producer]} in
+            "Abcom") models=("${MODELS_Abcom[@]}") ;;
+            "Amiko") models=("${MODELS_Amiko[@]}") ;;
+            "Axas") models=("${MODELS_Axas[@]}") ;;
+            "Dream") models=("${MODELS_Dream[@]}") ;;
+            "Edision") models=("${MODELS_Edision[@]}") ;;
+            "Formuler") models=("${MODELS_Formuler[@]}") ;;
+            "Gfutures") models=("${MODELS_Gfutures[@]}") ;;
+            "Gi") models=("${MODELS_Gi[@]}") ;;
+            "Gigablue") models=("${MODELS_Gigablue[@]}") ;;
+            "Maxytec") models=("${MODELS_Maxytec[@]}") ;;
+            "Miraclebox") models=("${MODELS_Miraclebox[@]}") ;;
+            "Octagon") models=("${MODELS_Octagon[@]}") ;;
+            "Qviart") models=("${MODELS_Qviart[@]}") ;;
+            "Sab") models=("${MODELS_Sab[@]}") ;;
+            "Spycat") models=("${MODELS_Spycat[@]}") ;;
+            "Technomate") models=("${MODELS_Technomate[@]}") ;;
+            "Uclan") models=("${MODELS_Uclan[@]}") ;;
+            "Vuplus") models=("${MODELS_Vuplus[@]}") ;;
+            "Xp") models=("${MODELS_Xp[@]}") ;;
+            "Xpeedc") models=("${MODELS_Xpeedc[@]}") ;;
+            "Xsarius") models=("${MODELS_Xsarius[@]}") ;;
+            "Xtrend") models=("${MODELS_Xtrend[@]}") ;;
+            "Zgemma") models=("${MODELS_Zgemma[@]}") ;;
+            *) clear && exit ;;
+        esac
+
+        sorted_models=($(for m in "${!models[@]}"; do echo "$m ${models[$m]}"; done | sort -k2 | cut -d ' ' -f 1))
+        list=()
+        for i in "${!sorted_models[@]}"; do
+            list+=("$i" "${models[$i]}")
+        done
+        
+        model=$(dialog --stdout --clear --menu "Select Model ${PRODUCERS[$producer]}" 40 50 40 "${list[@]}")
+        [ -z "$model" ] && clear && exit
+        
+        selected_model=${models[$model]}
+        build_option=$(dialog --stdout --clear --menu "Select Build Type" 40 50 2 \
+            "image" "Image" \
+            "feed" "Feed")
+        [ -z "$build_option" ] && clear && exit
+        
+        print_message "info" "Building ${PRODUCERS[$producer]} $selected_model..."
+        print_message "info" "Build version: $BUILD_NAME-$BUILD_VERSION"
+        
+        # Esegui il build
+        if MACHINE="$selected_model" make "$build_option"; then
+            print_message "success" "Build completato con successo!"
+            
+            # # Rinominazione solo per immagini
+            # if [ "$build_option" = "image" ]; then
+                # sleep 3
+                
+                # # PERCORSO ASSOLUTO - CORRETTO PER WSL
+                # BASE_PATH="/opt/corvoboys/openpli-oe-core"
+                # image_path="$BASE_PATH/build/tmp/deploy/images/$selected_model"
+                
+                # if [ -d "$image_path" ]; then
+                    # print_message "info" "  Directory trovata: $image_path"
+                    
+                    # # Cerca TUTTI i file nella directory del modello
+                    # file_count=0
+                    # renamed_count=0
+                    
+                    # # Usa find per cercare ricorsivamente (maxdepth 2 per sicurezza)
+                    # find "$image_path" -maxdepth 2 -type f -name "openpli-homebuild-*" | while read -r original_file; do
+                        # file_count=$((file_count + 1))
+                        # original_name=$(basename "$original_file")
+                        # dir_path=$(dirname "$original_file")
+                        
+                        # # Sostituisci "openpli-homebuild-" con "corvoboys-06-"
+                        # new_name="${BUILD_NAME}-${BUILD_VERSION}-${original_name#openpli-homebuild-}"
+                        # new_path="$dir_path/$new_name"
+                        
+                        # print_message "info" "  Trovato: $original_name"
+                        
+                        # # Rinomina il file
+                        # if mv "$original_file" "$new_path"; then
+                            # print_message "success" "  ✓ Rinominato: $new_name"
+                            # renamed_count=$((renamed_count + 1))
+                            
+                            # # Rinomina anche il file .md5 se esiste
+                            # if [ -f "$original_file.md5" ]; then
+                                # mv "$original_file.md5" "$new_path.md5"
+                                # print_message "success" "  ✓ Rinominato MD5"
+                            # fi
+                            
+                            # # Rinomina anche il file .sha256 se esiste
+                            # if [ -f "$original_file.sha256" ]; then
+                                # mv "$original_file.sha256" "$new_path.sha256"
+                                # print_message "success" "  ✓ Rinominato SHA256"
+                            # fi
+                        # else
+                            # print_message "error" "  ✗ Errore rinominando: $original_name"
+                        # fi
+                    # done
+                    
+                    # # Se non ha trovato file con find, prova con glob pattern nella directory principale
+                    # if [ $file_count -eq 0 ]; then
+                        # print_message "info" "  Ricerca nella directory principale..."
+                        
+                        # for original_file in "$image_path"/openpli-homebuild-*; do
+                            # if [ -f "$original_file" ]; then
+                                # file_count=$((file_count + 1))
+                                # original_name=$(basename "$original_file")
+                                # new_name="${BUILD_NAME}-${BUILD_VERSION}-${original_name#openpli-homebuild-}"
+                                # new_path="$image_path/$new_name"
+                                
+                                # if mv "$original_file" "$new_path"; then
+                                    # print_message "success" "  ✓ Rinominato: $new_name"
+                                    # renamed_count=$((renamed_count + 1))
+                                # fi
+                            # fi
+                        # done
+                    # fi
+                    
+                    # print_message "info" "  File rinominati: $renamed_count/$file_count"
+                    
+                # else
+                    # print_message "error" "  ✗ Directory non trovata: $image_path"
+                # fi
+            # fi
+        else
+            print_message "error" "Build FALLITO per $selected_model!"
+            exit 1
+        fi
+        # === FINE CODICE RINOMINA FILE ===
+        ;;
+
+    2)  # Build all models (Image)
+        # make update  # Commentato: causa problemi SSH
+        build_all_models "image"
+        ;;
+        
+    3)  # Build all models (Feed)
+        # make update  # Commentato: causa problemi SSH
+        build_all_models "feed"
+        ;;
+        
+    4)  # Exit
+        clear
+        exit 0
+        ;;
+esac
+
+exit 0

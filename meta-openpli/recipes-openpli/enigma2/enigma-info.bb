@@ -84,7 +84,9 @@ MEDIASERVICE ?= "${@bb.utils.contains("MACHINE_FEATURES", "himedia", "servicehis
 BLINDSCAN_BINARY ?= "blindscan"
 FORCE ?= "no"
 SUPPORT_DBOXLCD ?= "${@bb.utils.contains_any("MACHINE_FEATURES", "textlcd", "True", "False", d)}"
-DEVELOPER_NAME ?= "${DISTRO_NAME}"
+DEVELOPER_NAME ?= "Lululla"
+DISPLAY_NAME ?= "CorvoBoys"
+SUPPORT_NAME ?= "www.corvoboys.org"
 FRIENDLY_FAMILY ?= "${MACHINE}"
 HDMISTANDBY_MODE ?= "${@bb.utils.contains_any("MACHINE_FEATURES", "HDMISTANDBY", "1", "0", d)}"
 TIMERWAKEUP_MODE ?= "${@bb.utils.contains_any("MACHINE_FEATURES", "TIMERWAKEUP", "1", "0", d)}"
@@ -270,7 +272,8 @@ do_install() {
 	printf "dboxlcd=${SUPPORT_DBOXLCD}\n" >> ${D}${INFOFILE}
 	printf "developername='${DEVELOPER_NAME}'\n" >> ${D}${INFOFILE}
 	printf "displaybrand='${MACHINE_BRAND}'\n" >> ${D}${INFOFILE}
-	printf "displaydistro='OpenPLi'\n" >> ${D}${INFOFILE}
+	printf "displaydistro='${DISPLAY_NAME}'\n" >> ${D}${INFOFILE}
+	printf "support forum='${SUPPORT_NAME}\n" >> ${D}${INFOFILE}
 	printf "displaymodel='${MACHINE_NAME}'\n" >> ${D}${INFOFILE}
 	printf "displaytype='${DISPLAY_TYPE}'\n" >> ${D}${INFOFILE}
 	printf "distro='${DISTRO_NAME}'\n" >> ${D}${INFOFILE}
@@ -620,7 +623,7 @@ elif [ "$MACHINE" = "ustym4kpro" ]; then
 
 # runtime fixes for the Gigablue Trio 4K PRO
 elif [ "$MACHINE" = "gbtrio4k" ]; then
-	if [ ! -f $WIFI1 ] || ( [ -f $WIFI1 ] && [ $(head -n 1 $WIFI1) != "0608" ] ); then
+	if [ ! -f $WIFI1 ]; then
 		updateinfo "displaymodel" "UHD TRIO 4K PRO"
 		updateinfo "model" "gbtrio4kpro"
 		updateinfo "machinebuild" "gbtrio4kpro"

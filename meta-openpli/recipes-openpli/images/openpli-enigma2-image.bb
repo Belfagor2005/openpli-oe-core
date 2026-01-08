@@ -28,6 +28,13 @@ WIFI_DRIVERS = " \
 WIFI_BSP_DRIVERS ?= " "
 
 ENIGMA2_PLUGINS += " \
+	enigma2-plugin-extensions-epgimport-99 \
+	enigma2-plugin-extensions-xcforever \
+	enigma2-plugin-extensions-linuxsatpanel \
+	enigma2-plugin-extensions-tvmanager \
+	enigma2-plugin-oaweatherpli \
+	python3-pillow \
+    \
 	enigma2-plugin-extensions-audiosync \
 	enigma2-plugin-extensions-autobackup \
 	enigma2-plugin-extensions-cutlisteditor \
@@ -80,7 +87,6 @@ IMAGE_INSTALL += " \
 	e2fsprogs-mke2fs \
 	e2fsprogs-tune2fs \
 	enigma2 \
-	enigma2-plugin-skins-e2darkos \
 	fakelocale \
 	fuse-exfat \
 	hdparm \
@@ -135,16 +141,16 @@ IMAGE_INSTALL += " \
 
 IMAGE_INSTALL:append:libc-glibc = " glibc-binary-localedata-en-gb"
 
-export IMAGE_BASENAME = "openpli"
+export IMAGE_BASENAME = "corvoboys"
 IMAGE_LINGUAS = ""
 IMAGE_FEATURES += "package-management"
 
 # Remove the mysterious var/lib/opkg/lists that appears to be the result
 # of the installer that populates the rootfs. I wanted to call this
 # rootfs:remove_opkg_leftovers but that fails to parse.
-removeopkgleftovers() {
-	rm -r ${IMAGE_ROOTFS}/var/lib/opkg/lists
-}
+# removeopkgleftovers() {
+#	rm -r ${IMAGE_ROOTFS}/var/lib/opkg/lists
+# }
 
 # Some features in image.bbclass we do NOT want, so override them
 # to be empty. We want to log in as root, but NOT via SSH. So we want
@@ -162,4 +168,4 @@ license_create_manifest() {
 
 ROOTFS_POSTPROCESS_COMMAND += "removeopkgleftovers; "
 
-export IMAGE_BASENAME = "openpli-enigma2"
+export IMAGE_BASENAME = "corvoboys-enigma2"
