@@ -2,7 +2,7 @@ PREFERRED_VERSION_linux-hd = "4.10.12"
 
 IMAGE_CLASSES += " hd-emmc_image_multiboot"
 IMAGE_FSTYPES += " hdemmc tar"
-IMAGE_ROOTFS_SIZE ?= "294912"
+IMAGE_ROOTFS_SIZE ?= "409600"
 
 PREFERRED_PROVIDER_virtual/blindscan-dvbs ?= "hd-dvb-modules-${MACHINE}"
 PREFERRED_PROVIDER_virtual/blindscan-dvbc ?= "hd-dvb-modules-${MACHINE}"
