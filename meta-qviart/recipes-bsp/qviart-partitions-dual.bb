@@ -44,11 +44,11 @@ do_package_qa() {
 SRC_URI[md5sum] = "076cda40a60b602c28daaa08dbbbcfcf"
 SRC_URI[sha256sum] = "71cd0306028a64ab37ab80737355a2d88d1cf13b87e02e8184fa2eb3e49e41b5"
 
-FILES_${PN} = "/usr/share ${sysconfdir}"
+FILES:${PN} = "/usr/share ${sysconfdir}"
 
-INSANE_SKIP_${PN} += "already-stripped"
+INSANE_SKIP:${PN} += "already-stripped"
 
-pkg_postinst_${PN}() {
+pkg_postinst:${PN}() {
     if [ "x$D" == "x" ]; then
         if [ -f /usr/share/apploader.bin -a -b /dev/block/by-name/loader ] ; then
             dd if=/usr/share/apploader.bin of=/dev/block/by-name/loader

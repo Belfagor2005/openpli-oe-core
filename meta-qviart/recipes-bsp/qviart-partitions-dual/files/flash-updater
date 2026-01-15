@@ -1,0 +1,39 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          flash-updater
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Default-Start:     S
+# Default-Stop:      0 1 6
+# Short-Description: Update Qviart flash partitions
+# Description:       Updates bootloader partitions on Qviart receivers
+### END INIT INFO
+
+case "$1" in
+    start)
+        echo "Starting flash updater..."
+        if [ -f /usr/share/apploader.bin -a -b /dev/block/by-name/loader ]; then
+            dd if=/usr/share/apploader.bin of=/dev/block/by-name/loader bs=4096
+        fi
+        if [ -f /usr/share/fastboot.bin -a -b /dev/block/by-name/fastboot ]; then
+            dd if=/usr/share/fastboot.bin of=/dev/block/by-name/fastboot bs=4096
+        fi
+        if [ -f /usr/share/bootargs.bin -a -b /dev/block/by-name/bootargs ]; then
+            dd if=/usr/share/bootargs.bin of=/dev/block/by-name/bootargs bs=4096
+        fi
+        echo "Flash update completed"
+        ;;
+    stop)
+        echo "Stopping flash updater..."
+        ;;
+    restart|reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
