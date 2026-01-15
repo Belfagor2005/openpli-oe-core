@@ -18,6 +18,8 @@ S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 
-GLIBC_64BIT_TIME_FLAGS = ""
+GLIBC_64BIT_TIME_FLAGS:mipsel = ""
 
 EXTRA_OECONF = "ac_cv_prog_c_openmp=-fopenmp"
+
+INSANE_SKIP = "32bit-time"

@@ -47,6 +47,7 @@ MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += " \
     gb-qteglfs-platform \
     ${@bb.utils.contains('MACHINE', 'gbquad4kpro', 'gigablue-firmware-aic8800d80 gigablue-aic8800-driver gigablue-bluetooth-keymaps' , '', d)} \
     kernel-module-88xxau \
+    kernel-module-88x2bu \
     "
 
 EXTRA_IMAGEDEPENDS = "\

@@ -55,6 +55,7 @@ MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "\
 	kernel-module-rtl8192cu \
 	kernel-module-rtl8xxxu \
 	kernel-module-zd1211rw \
+	kernel-module-88x2bu \
 	gigablue-uwe5621-firmware \
 	gigablue-hciattach-gbtrio4kpro \
 	gigablue-bluetooth-keymaps \
