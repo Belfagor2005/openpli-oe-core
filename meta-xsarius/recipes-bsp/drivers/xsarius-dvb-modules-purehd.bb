@@ -24,7 +24,7 @@ inherit module
 do_compile() {
 }
 
-FILES_${PN} += "${sysconfdir}/modules-load.d/_${MACHINE}.conf"
+FILES:${PN} += "${sysconfdir}/modules-load.d/_${MACHINE}.conf"
 
 do_install() {
 		install -d ${D}/lib/modules/${KV}/extra

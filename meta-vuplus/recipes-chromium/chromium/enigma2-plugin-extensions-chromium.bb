@@ -11,7 +11,6 @@ SRC_URI = "http://downloads.openpli.org/archive/vuplus/e2plugin-chromium-vuplus_
 SRC_URI:append = " \
            file://port-to-python3.patch"
 
-#DEPENDS_${PN} = "chromium-browser"
 RDEPENDS:${PN} = "chromium-browser"
 
 do_install:append() {
