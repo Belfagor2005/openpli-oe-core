@@ -21,12 +21,15 @@ RDEPENDS:${PN} = "python3-core \
 	python3-singledispatch \
 	python3-websocket-client \
 	python3-trio \
+	python3-certifi \
+	python3-urllib3 \
+	python3-trio-websocket \
 "
 
 inherit setuptools3 python3-dir python3-compileall gitpkgv
 
-PV = "8.1.0+git"
-PKGV = "8.1.0+git${GITPKGV}"
+PV = "8.1.2+git"
+PKGV = "8.1.2+git${GITPKGV}"
 
 SRCREV_plugins = "${AUTOREV}"
 SRCREV_FORMAT = "streamlink"
