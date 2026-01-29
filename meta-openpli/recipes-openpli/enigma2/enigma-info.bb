@@ -623,7 +623,7 @@ elif [ "$MACHINE" = "ustym4kpro" ]; then
 
 # runtime fixes for the Gigablue Trio 4K PRO
 elif [ "$MACHINE" = "gbtrio4k" ]; then
-	if [ ! -f $WIFI1 ]; then
+	if [ ! -f $WIFI1 ] || [ $(head -n 1 $WIFI1) != "0608" ]; then
 		updateinfo "displaymodel" "UHD TRIO 4K PRO"
 		updateinfo "model" "gbtrio4kpro"
 		updateinfo "machinebuild" "gbtrio4kpro"
