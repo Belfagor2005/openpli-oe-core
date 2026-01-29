@@ -220,7 +220,6 @@ OPTIONAL_ENIGMA2_PACKAGES = " \
 	enigma2-plugin-extensions-tmbd \
 	enigma2-plugin-extensions-ts-sateditor \
 	enigma2-plugin-extensions-usbformatwizard \
-	enigma2-plugin-extensions-vavoo \
 	enigma2-plugin-extensions-vcs \
 	enigma2-plugin-extensions-xmodem \
 	enigma2-plugin-extensions-xstreamity \
