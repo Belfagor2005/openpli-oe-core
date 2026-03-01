@@ -7,7 +7,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 DEPENDS = "enigma2 uchardet openssl"
 RDEPENDS:${PN} = "enigma2 uchardet openssl python3-json"
-RRECOMMENDS:${PN} = "exteplayer3 gstplayer"
+RRECOMMENDS:${PN} = "exteplayer3 gstplayer streamlinksrv"
 
 SRC_URI = "git://github.com/mx3L/serviceapp.git;protocol=https;branch=develop \
 			file://update-devel-m4-file.patch \

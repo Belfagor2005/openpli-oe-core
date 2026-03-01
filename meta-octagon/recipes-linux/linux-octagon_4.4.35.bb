@@ -15,13 +15,6 @@ MACHINE_KERNEL_PR:append = "r1"
 SRC_URI[md5sum] = "ad7eab17a5071a0d5f9ff44eb44e027d"
 SRC_URI[sha256sum] = "0654d5aa21c51eaea46f7203014afe60052ec0990a92b9e289e1ca8a2793907c"
 
-
-# By default, kernel.bbclass modifies package names to allow multiple kernels
-# to be installed in parallel. We revert this change and rprovide the versioned
-# package names instead, to allow only one kernel to be installed.
-RPROVIDES:${KERNEL_PACKAGE_NAME}-base = "kernel-${KERNEL_VERSION}"
-RPROVIDES:${KERNEL_PACKAGE_NAME}-image = "kernel-image-${KERNEL_VERSION}"
-
 SRC_URI += "http://downloads.openpli.org/archive/octagon/octagon-linux-${PV}-${SRCDATE}.tar.gz \
     file://defconfig \
     file://0001-remote.patch \
@@ -37,11 +30,11 @@ SRC_URI += "http://downloads.openpli.org/archive/octagon/octagon-linux-${PV}-${S
     file://make-yyloc-declaration-extern.patch \
     file://fix-build-with-binutils-2.41.patch \
 "
-SRC_URI:append_sf8008m = " \
+SRC_URI:append:sf8008m = " \
 	file://fix-index-for-usb.patch \
 "
 
-SRC_URI:append_sf8008 = " \
+SRC_URI:append:sf8008 = " \
 	file://emmc_ks81aa80_05s000_reboot.patch \
 "
 

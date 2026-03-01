@@ -1,0 +1,19 @@
+diff --git a/src/utils.cpp b/src/utils.cpp
+index 4d881e4..372beae 100644
+--- a/src/utils.cpp
++++ b/src/utils.cpp
+@@ -226,13 +226,7 @@ void set_signal_handler(char *argv0) {
+ }
+ 
+ void print_trace(void) {
+-#ifndef DISABLE_CXX23
+-    const std::stacktrace trace = std::stacktrace::current();
+-    LOG0("Stack trace:\n%s", std::to_string(trace).c_str());
+-#else
+-    LOG("C++ compiler does not support C++23 standard and stacktrace support "
+-        "is missing");
+-#endif
++    LOG("No stacktrace support compiled in");
+ }
+ 
+ extern int run_loop;

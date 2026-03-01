@@ -99,8 +99,8 @@ OPTIONAL_PACKAGES += " \
 	libudfread \
 	mc \
 	mediainfo \
-	pv \
 	minisatip \
+	pv \
 	mpd \
 	mtd-utils \
 	mtr \

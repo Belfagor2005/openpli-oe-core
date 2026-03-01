@@ -35,27 +35,21 @@ SRC_URI = "http://downloads.openpli.org/archive/zgemma/linux-${PV}-${SRCDATE}-${
 	file://fix-build-with-binutils-2.41.patch \
 "
 
-SRC_URI:append_h9 = " \
+SRC_URI:append:h9 = " \
 	file://0001-mmc-switch-1.8V.patch \
 "
 
-SRC_URI:append_h9se = " \
+SRC_URI:append:h9se = " \
 	file://0001-mmc-switch-1.8V.patch \
 "
 
-SRC_URI:append_i55plus = " \
+SRC_URI:append:i55plus = " \
 	file://0001-mmc-switch-1.8V.patch \
 "
 
-SRC_URI:append_i55se = " \
+SRC_URI:append:i55se = " \
 	file://0001-mmc-switch-1.8V.patch \
 "
-
-# By default, kernel.bbclass modifies package names to allow multiple kernels
-# to be installed in parallel. We revert this change and rprovide the versioned
-# package names instead, to allow only one kernel to be installed.
-RPROVIDES:${KERNEL_PACKAGE_NAME}-base = "kernel-${KERNEL_VERSION}"
-RPROVIDES:${KERNEL_PACKAGE_NAME}-image = "kernel-image-${KERNEL_VERSION}"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -66,10 +60,10 @@ KERNEL_IMAGETYPE = "uImage"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 
 
-FILES:${KERNEL_PACKAGE_NAME}-image_h9 = " "
-FILES:${KERNEL_PACKAGE_NAME}-image_hzero = " "
-FILES:${KERNEL_PACKAGE_NAME}-image_h8 = " "
-FILES:${KERNEL_PACKAGE_NAME}-image_i55plus = " "
+FILES:${KERNEL_PACKAGE_NAME}-image:h9 = " "
+FILES:${KERNEL_PACKAGE_NAME}-image:hzero = " "
+FILES:${KERNEL_PACKAGE_NAME}-image:h8 = " "
+FILES:${KERNEL_PACKAGE_NAME}-image:i55plus = " "
 FILES:${KERNEL_PACKAGE_NAME}-image = "/${KERNEL_IMAGEDEST}/findkerneldevice.sh"
 
 kernel_do_configure:prepend() {
@@ -77,32 +71,32 @@ kernel_do_configure:prepend() {
 	install -m 0644 ${WORKDIR}/initramfs-subdirboot.cpio.gz ${B}/
 }
 
-kernel_do_install:append_h9se() {
+kernel_do_install:append:h9se() {
 	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -m 0755 ${WORKDIR}/findkerneldevice.sh ${D}/${KERNEL_IMAGEDEST}
 }
 
-kernel_do_install:append_h9combo() {
+kernel_do_install:append:h9combo() {
 	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -m 0755 ${WORKDIR}/findkerneldevice.sh ${D}/${KERNEL_IMAGEDEST}
 }
 
-kernel_do_install:append_h9combose() {
+kernel_do_install:append:h9combose() {
 	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -m 0755 ${WORKDIR}/findkerneldevice.sh ${D}/${KERNEL_IMAGEDEST}
 }
 
-kernel_do_install:append_h10() {
+kernel_do_install:append:h10() {
 	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -m 0755 ${WORKDIR}/findkerneldevice.sh ${D}/${KERNEL_IMAGEDEST}
 }
 
-kernel_do_install:append_i55se() {
+kernel_do_install:append:i55se() {
 	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -m 0755 ${WORKDIR}/findkerneldevice.sh ${D}/${KERNEL_IMAGEDEST}
 }
 
-pkg_postinst:kernel-image_h9() {
+pkg_postinst:kernel-image:h9() {
 	if [ "x$D" == "x" ]; then
 		if [ -f /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ] ; then
 			flash_eraseall /dev/${MTD_KERNEL}
@@ -112,7 +106,7 @@ pkg_postinst:kernel-image_h9() {
 	true
 }
 
-pkg_postinst:kernel-image_i55plus() {
+pkg_postinst:kernel-image:i55plus() {
 	if [ "x$D" == "x" ]; then
 		if [ -f /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ] ; then
 			flash_eraseall /dev/${MTD_KERNEL}
@@ -122,7 +116,7 @@ pkg_postinst:kernel-image_i55plus() {
 	true
 }
 
-pkg_postinst:kernel-image_hzero() {
+pkg_postinst:kernel-image:hzero() {
 	if [ "x$D" == "x" ]; then
 		if [ -f /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ] ; then
 			flash_eraseall /dev/${MTD_KERNEL}
@@ -132,7 +126,7 @@ pkg_postinst:kernel-image_hzero() {
 	true
 }
 
-pkg_postinst:kernel-image_h8() {
+pkg_postinst:kernel-image:h8() {
 	if [ "x$D" == "x" ]; then
 		if [ -f /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ] ; then
 			flash_eraseall /dev/${MTD_KERNEL}

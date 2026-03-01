@@ -11,11 +11,5 @@ SRC_URI = "http://downloads.openpli.org/archive/edision/linux-edision-${PV}.tar.
 
 COMPATIBLE_MACHINE = "osnino|osninoplus|osninopro"
 
-# By default, kernel.bbclass modifies package names to allow multiple kernels
-# to be installed in parallel. We revert this change and rprovide the versioned
-# package names instead, to allow only one kernel to be installed.
-RPROVIDES:${KERNEL_PACKAGE_NAME}-base = "kernel-${KERNEL_VERSION}"
-RPROVIDES:${KERNEL_PACKAGE_NAME}-image = "kernel-image-${KERNEL_VERSION}"
-
 SRC_URI[md5sum] = "10eb489d6d34213451ae808f55f449da"
 SRC_URI[sha256sum] = "21a2db8e25d8eab13674cc45f8b102d7fa126b950648a02590daef4ff4c00f4c"

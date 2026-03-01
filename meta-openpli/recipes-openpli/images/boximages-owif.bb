@@ -22,6 +22,8 @@ do_install() {
 
     if [ ${MACHINE} = "h17" ]; then
         install -m 0644 ${S}/boxes/zgemmah17combo.png ${D}${datadir}/enigma2/hardware/zgemmah17combo_front.png
+    elif [ ${MACHINE} = "h17twin" ]; then
+        install -m 0644 ${S}/boxes/zgemmah17twin.png ${D}${datadir}/enigma2/hardware/zgemmah17twin_front.png
     elif [ ${MACHINE} = "lunix3-4k" ]; then
         install -m 0644 ${S}/boxes/lunix34k.png ${D}${datadir}/enigma2/hardware/lunix34k_front.png
     elif [ ${MACHINE} = "et6x00" ]; then

@@ -19,13 +19,6 @@ SRC_URI[mv200.sha256sum] = "c266f00c087a1e979067e10d2dd921704a96586612753849be27
 SRC_URI[mv300.md5sum] = "9c400b45c9bc7949c97ddb5bf6714b1e"
 SRC_URI[mv300.sha256sum] = "e5604bb3576ead02b23861b0dde082a2b219fe7a622d973f7a52aaafbc56f7bb"
 
-
-# By default, kernel.bbclass modifies package names to allow multiple kernels
-# to be installed in parallel. We revert this change and rprovide the versioned
-# package names instead, to allow only one kernel to be installed.
-RPROVIDES:${KERNEL_PACKAGE_NAME}-base = "kernel-${KERNEL_VERSION}"
-RPROVIDES:${KERNEL_PACKAGE_NAME}-image = "kernel-image-${KERNEL_VERSION}"
-
 SRC_URI += "http://downloads.openpli.org/archive/octagon/octagon-linux-${PV}-${SRCDATE}.tar.gz;name=${KVTYPE} \
     file://defconfig \
     file://initramfs-subdirboot.cpio.gz;unpack=0 \

@@ -8,6 +8,7 @@ RDEPENDS:${PN} = "libdvbcsa openssl"
 
 SRC_URI = " \
     git://github.com/catalinii/minisatip.git;protocol=http;branch=master;protocol=https \
+    file://drop-stacktrace.patch \
     file://minisatip.sh \
     "
 
@@ -17,7 +18,7 @@ PV = "${UPSTREAMVERSION}+git"
 S = "${WORKDIR}/git"
 BUILD = "${WORKDIR}/git"
 
-inherit autotools-brokensep update-rc.d
+inherit cmake update-rc.d
 
 INITSCRIPT_NAME = "minisatip"
 
@@ -32,7 +33,7 @@ do_install () {
     install -d -m 0755 ${D}/${bindir}
     install -d -m 0755 ${D}/${datadir}/${PN}
     install -d -m 0755 ${D}/etc/init.d
-    install -m 0755 ${S}/minisatip ${D}/${bindir}/
+    install -m 0755 ${B}/minisatip ${D}/${bindir}/
     install -m 0755 ${WORKDIR}/minisatip.sh ${D}/etc/init.d/minisatip
     cp -r --preserve=timestamps ${S}/html ${D}/${datadir}/${PN}
 }

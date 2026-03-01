@@ -462,6 +462,17 @@ elif [ "$MACHINE" = "h5" ]; then
 	# displaymodel=H5
 	# machinebuild=zgemmah5
 
+# runtime fixes for the Zgemma H8
+elif [ "$MACHINE" = "h8" ]; then
+	if [ -f $WIFI2 ]; then
+		value=$(head -n 1 $WIFI2)
+	else
+		value=""
+	fi
+	if [ "$value" = "f192" ]; then
+		updateinfo "displaymodel" "H8.2H+"
+	fi
+
 # runtime fixes for the Zgemma H9
 elif [ "$MACHINE" = "h9" ]; then
 	if [ "$model" = "h9.s" ]; then

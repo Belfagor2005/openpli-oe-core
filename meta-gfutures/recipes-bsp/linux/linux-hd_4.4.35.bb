@@ -31,12 +31,6 @@ SRC_URI = "http://downloads.openpli.org/archive/gfutures/linux-${PV}-${SRCDATE}-
 	file://fix-build-with-binutils-2.41-kernel4-4-35.patch \
 "
 
-# By default, kernel.bbclass modifies package names to allow multiple kernels
-# to be installed in parallel. We revert this change and rprovide the versioned
-# package names instead, to allow only one kernel to be installed.
-RPROVIDES:${KERNEL_PACKAGE_NAME}-base = "kernel-${KERNEL_VERSION}"
-RPROVIDES:${KERNEL_PACKAGE_NAME}-image = "kernel-image-${KERNEL_VERSION}"
-
 S = "${WORKDIR}/linux-${PV}"
 
 export OS = "Linux"

@@ -57,6 +57,8 @@ check_network_swap() {
 
 interfaces_up() {
 	while IFS=\  read AUTO IF; do
+		ifdown $IF
+		ip addr flush dev $IF scope global
 		ifup $IF
 	done < <(grep -E "^auto \w" /etc/network/interfaces)
 }
@@ -93,4 +95,3 @@ force-reload|restart)
 esac
 
 exit 0
-
