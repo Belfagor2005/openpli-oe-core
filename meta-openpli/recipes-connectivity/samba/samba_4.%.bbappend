@@ -143,17 +143,3 @@ PACKAGES:remove = "libnetapi"
 
 # remove python, we're builing without
 RDEPENDS:${PN}:remove = "${PN}-python3 python3"
-
-# move all libraries from samba to libsamba-base to fix circular dependencies
-FILES:lib${PN}-base += "\
-					${libdir}/*.so.* \
-					${libdir}/samba/*.so \
-					${libdir}/samba/*.so.* \
-					"
-
-# move some libraries from libsamba-base to libwbclient to fix circular dependencies
-FILES:libwbclient = "${libdir}/libwbclient.so.* \
-                     ${libdir}/samba/libwinbind-client.so \
-                     ${libdir}/samba/libwinbind-client-samba4.so \
-                     ${libdir}/samba/libreplace-samba4.so \
-"

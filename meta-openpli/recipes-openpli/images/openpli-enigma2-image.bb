@@ -109,7 +109,6 @@ IMAGE_INSTALL += " \
 	python3-netifaces \
 	python3-pysmb \
 	python3-requests \
-	${@bb.utils.contains('TARGET_ARCH', 'mipsel', '', 'samba', d)} \
 	sdparm \
 	settings-autorestore \
 	tuxbox-common \
