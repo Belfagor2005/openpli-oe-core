@@ -9,7 +9,7 @@ PR = "r5"
 
 SRC_URI = " \
 	http://downloads.openpli.org/archive/xtrend/fpupdate-${FPUPDATE}.zip \
-	http://downloads.openpli.org/archive/xtrend/${MACHINE}/avrmain-${MACHINE}-${PV}.zip;name=avrmain \
+	http://downloads.openpli.org/archive/xtrend/avrmain-${MACHINE}-${PV}.zip;name=avrmain \
 	"
 
 S = "${WORKDIR}"
