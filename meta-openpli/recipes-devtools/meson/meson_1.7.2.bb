@@ -126,7 +126,7 @@ do_install:append:class-nativesdk() {
 
     # We need to wrap the real meson with a thin env setup wrapper.
     mv ${D}${bindir}/meson ${D}${bindir}/meson.real
-    install -m 0755 ${UNPACKDIR}/meson-wrapper ${D}${bindir}/meson
+    install -m 0755 ${WORKDIR}/meson-wrapper ${D}${bindir}/meson
 }
 
 FILES:${PN}:append:class-nativesdk = "${datadir}/meson ${SDKPATHNATIVE}"

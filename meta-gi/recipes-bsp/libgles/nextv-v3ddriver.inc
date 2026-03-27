@@ -9,7 +9,7 @@ DEPENDS = "mesa patchelf-native"
 PROVIDES = "virtual/libgles2 virtual/libgles1 virtual/egl"
 RPROVIDES:${PN} = "libnxpl.so libnexus.so libnxclient.so libv3ddriver.so libEGL.so.1.4 libEGL.so.1 libEGL.so libGLESv1_CM.so.1.1 libGLESv1_CM.so.1 libGLESv1_CM.so libGLESv2.so.2.0 libGLESv2.so.2 libGLESv2.so"
 
-SRC_URI = "http://downloads.openpli.org/archives/gi/sf4008-v3ddriver-${SRCDATE}.zip"
+SRC_URI = "http://downloads.openpli.org/archive/gi/sf4008-v3ddriver-${SRCDATE}.zip"
 
 S = "${WORKDIR}"
 
