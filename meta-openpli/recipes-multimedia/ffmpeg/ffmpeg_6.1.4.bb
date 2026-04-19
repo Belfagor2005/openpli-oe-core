@@ -29,12 +29,10 @@ SRC_URI = " \
     file://vulkan_fix_gcc14.patch \
     file://CVE-2024-28661.patch \
     file://CVE-2023-49528.patch \
-    file://CVE-2024-35365.patch \
-    file://CVE-2024-36618.patch \
     file://CVE-2024-35369.patch \
     file://CVE-2025-25473.patch \
     file://CVE-2025-22921.patch \
-    file://CVE-2025-1594.patch \
+    file://0001-avcodec-tableprint_vlc-Unbreak-hardcoded-tables.patch \
     file://0001-fix-mpegts.patch \
     file://0002-rtsp.patch \
     file://0003-dxva2.patch \
@@ -47,7 +45,7 @@ SRC_URI = " \
     file://0013-add-av_stream_get_first_dts-for-chromium.patch \
 "
 
-SRC_URI[sha256sum] = "bc5f1e4a4d283a6492354684ee1124129c52293bcfc6a9169193539fbece3487"
+SRC_URI[sha256sum] = "a231e3d5742c44b1cdaebfb98ad7b6200d12763e0b6db9e1e2c5891f2c083a18"
 
 # https://nvd.nist.gov/vuln/detail/CVE-2023-39018
 # https://github.com/bramp/ffmpeg-cli-wrapper/issues/291
@@ -61,8 +59,11 @@ CVE_STATUS[CVE-2023-39018] = "cpe-incorrect: This issue belongs to ffmpeg-cli-wr
 CVE_STATUS[CVE-2025-1373]  = "fixed-version: Vulnerable code not present in any release"
 
 CVE_STATUS_GROUPS += "CVE_STATUS_FIXED_61x"
-CVE_STATUS_FIXED_61x = "CVE-2023-49502 CVE-2023-50007 CVE-2023-50008 CVE-2023-50009 CVE-2023-50010 CVE-2024-31578 CVE-2024-31582 CVE-2024-31585"
+CVE_STATUS_FIXED_61x = "CVE-2023-49502 CVE-2023-50007 CVE-2023-50008 CVE-2023-50009 CVE-2023-50010 CVE-2024-31578 CVE-2024-31582 CVE-2024-31585 CVE-2025-1594 CVE-2025-10256 CVE-2025-12343"
 CVE_STATUS_FIXED_61x[status] = "cpe-incorrect:these CVEs are fixed in 6.1.x"
+
+CVE_STATUS[CVE-2025-25468] = "cpe-incorrect:vulnerability was introduced in v8.0"
+CVE_STATUS[CVE-2025-25469] = "cpe-incorrect: Current version (6.1.4) is not impacted."
 
 # Build fails when thumb is enabled: https://bugzilla.yoctoproject.org/show_bug.cgi?id=7717
 ARM_INSTRUCTION_SET:armv4 = "arm"
@@ -207,6 +208,10 @@ EXTRA_OECONF = " \
 	--enable-muxer=rawvideo \
 	\
 	--disable-parsers \
+	--enable-parser=flv \
+	--enable-parser=rv30 \
+	--enable-parser=rv40 \
+	--enable-parser=vp3 \
 	--enable-parser=aac \
 	--enable-parser=aac_latm \
 	--enable-parser=ac3 \
@@ -247,6 +252,20 @@ EXTRA_OECONF = " \
 	--enable-encoder=wmav2 \
 	\
 	--disable-decoders \
+	--enable-decoder=flv1 \
+	--enable-decoder=msmpeg4v1 \
+	--enable-decoder=msmpeg4v2 \
+	--enable-decoder=msmpeg4 \
+	--enable-decoder=rv30 \
+	--enable-decoder=rv40 \
+	--enable-decoder=vc1 \
+	--enable-decoder=vp6 \
+	--enable-decoder=vp6a \
+	--enable-decoder=vp6f \
+	--enable-decoder=vp8 \
+	--enable-decoder=wmv1 \
+	--enable-decoder=wmv2 \
+	--enable-decoder=wmv3 \
 	--enable-decoder=aac \
 	--enable-decoder=aac_latm \
 	--enable-decoder=adpcm_ct \
@@ -369,6 +388,8 @@ EXTRA_OECONF = " \
 	--enable-decoder=wmavoice \
 	--enable-decoder=wavpack \
 	--enable-decoder=xsub \
+	--enable-decoder=ac3 \
+	--enable-decoder=dts \
 	\
 	--disable-demuxers \
 	--enable-demuxer=aac \
@@ -529,3 +550,5 @@ INSANE_SKIP:${MLPREFIX}libavutil = "textrel"
 INSANE_SKIP:${MLPREFIX}libswscale = "textrel"
 INSANE_SKIP:${MLPREFIX}libswresample = "textrel"
 INSANE_SKIP:${MLPREFIX}libpostproc = "textrel"
+
+CVE_PRODUCT = "ffmpeg libswresample libavcodec"

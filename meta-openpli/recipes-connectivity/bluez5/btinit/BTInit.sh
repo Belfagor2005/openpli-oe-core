@@ -16,8 +16,6 @@ BTAUDIO_FILE=/proc/stb/audio/btaudio
 COMMANDCONNECT="/usr/lib/enigma2/python/Plugins/Extensions/BTDevicesManager/BTAudioConnect"
 LOG_TAG="BluetoothManager"
 
-rm -rf /run/dbus/pid
-
 log() {
     logger -t "$LOG_TAG" "$1"
 }
@@ -25,6 +23,10 @@ log() {
 if [ -f "$SETTINGS_FILE" ]; then
     AUDIO_ADDRESS=$(grep -m 1 '^config.btdevicesmanager.audioaddress=' "$SETTINGS_FILE" | cut -d'=' -f2 | tr -d "'\"")
     AUDIO_CONNECT=$(grep -m 1 '^config.btdevicesmanager.audioconnect=' "$SETTINGS_FILE" | cut -d'=' -f2 | tr -d "'\"")
+    BTAUDIO_STATE=$(grep -m 1 '^config.av.btaudio=' "$SETTINGS_FILE" | cut -d'=' -f2 | tr -d "'\"")
+    log "Bluetooth AUDIO_ADDRESS: $AUDIO_ADDRESS"
+    log "Bluetooth AUDIO_CONNECT: $AUDIO_CONNECT"
+    log "Bluetooth BTAUDIO_STATE: $BTAUDIO_STATE"
 fi
 
 # If AUDIO_ADDRESS is empty, set AUDIO_CONNECT to False
@@ -39,6 +41,7 @@ fi
 
 if [ -f "$INFO_FILE" ]; then
     MODEL=$(grep -m 1 '^model=' "$INFO_FILE" | cut -d'=' -f2 | tr -d "'\"")
+    MACHINEBUILD=$(grep -m 1 '^machinebuild=' "$INFO_FILE" | cut -d'=' -f2 | tr -d "'\"")
 fi
 
 if [ "$MODEL" = "inihdp" ]; then
@@ -49,27 +52,38 @@ fi
 start() {
     log "Starting..."
 
-    #if [ "$MODEL" = "gbmv200" ]; then
-    #    log "Attaching HCI for sprd"
-    #    hciattach_sprd /dev/ttyBT0 sprd > /var/log/hciattach.log &
-    #fi
+    if [ "$MACHINEBUILD" = "gbquad4kpro" ]; then
+        log "gbquad4kpro: enable AUDIO_CONNECT"
+        if [ "$BTAUDIO_STATE" = "True" ]; then
+            log "gbquad4kpro: set /proc/stb/audio/btaudio to on"
+            echo on > /proc/stb/audio/btaudio
+        else
+            log "gbquad4kpro: set /proc/stb/audio/btaudio to off"
+            echo off > /proc/stb/audio/btaudio
+        fi
+    fi
 
     hciconfig hci0 up > /dev/null 2>&1 && log "Attaching hci0"
     (hcitool dev | awk 'NR==2 {print $2}' | while read -r BT_MAC; do
         log "Bluetooth MAC: $BT_MAC"
     done) &
 
-    # disable aithentication
-    sleep 2
-    hciconfig hci0 noauth > /dev/null 2>&1 && log "Disable authentication for hci0"
-
-    if [ -f "$BTAUDIO_FILE" ] && [ -n "$AUDIO_ADDRESS" ]; then
-        if [ "$AUDIO_CONNECT" = "True" ]; then
-            log "Connecting to audio device: $AUDIO_ADDRESS"
-            "$COMMANDCONNECT" "$AUDIO_ADDRESS" &
+    if [ -n "$AUDIO_ADDRESS" ]; then
+        i=0
+        while [ ! -f "$BTAUDIO_FILE" ] && [ $i -lt 10 ]; do
+            sleep 1
+            i=$((i+1))
+        done
+        if [ -f "$BTAUDIO_FILE" ]; then
+            if [ "$AUDIO_CONNECT" = "True" ]; then
+                log "Connecting to audio device: $AUDIO_ADDRESS"
+                "$COMMANDCONNECT" "$AUDIO_ADDRESS" &
+            else
+                log "Connecting to audio device default"
+                "$COMMANDCONNECT" &
+            fi
         else
-            log "Connecting to audio device default"
-            "$COMMANDCONNECT" &
+            log "BTAUDIO_FILE not found after timeout"
         fi
     fi
 }
@@ -78,6 +92,32 @@ stop() {
     if [ "$MODEL" = "inihdp" ]; then
         log "inihdp: Stopping driver"
         rmmod rtk_btusb &
+    fi
+
+    if [ "$BTAUDIO_STATE" = "True" ]; then
+        log "set /proc/stb/audio/btaudio to off"
+        echo off > /proc/stb/audio/btaudio
+    fi
+
+    log "Stopping aplay if running"
+    if [ -f /var/run/aplay.pid ]; then
+        PID=$(cat /var/run/aplay.pid 2>/dev/null)
+        if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+            log "Stopping existing aplay process (PID: $PID)"
+            kill "$PID"
+            /usr/bin/killall -q aplay 2>/dev/null
+            for i in 1 2 3; do
+                kill -0 "$PID" 2>/dev/null || break
+                sleep 1
+            done
+            kill -9 "$PID" 2>/dev/null || true
+            /usr/bin/killall -9 aplay 2>/dev/null || true
+            log "aplay stopped"
+        fi
+        rm -f /var/run/aplay.pid
+    else
+        /usr/bin/killall -q aplay 2>/dev/null || true
+        /usr/bin/killall -9 aplay 2>/dev/null || true
     fi
 }
 

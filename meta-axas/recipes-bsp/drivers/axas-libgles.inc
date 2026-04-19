@@ -12,7 +12,7 @@ RPROVIDES:${PN} = "libnxpl.so libnexus.so libv3ddriver.so libEGL.so.1.4 libEGL.s
 PV = "${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "http://121.143.3.35/e4hd/libgles/${MACHINE}-libgles-${SRCDATE}.zip"
+SRC_URI = "http://downloads.openpli.org/archive/axas/${MACHINE}-libgles-${SRCDATE}.zip"
 
 S = "${WORKDIR}"
 
