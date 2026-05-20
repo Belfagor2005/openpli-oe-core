@@ -38,6 +38,7 @@ do_install() {
         install -m 0644 ${S}/png/et9500.png ${D}${datadir}/enigma2/hardware/et9500.png
     elif [ ${MACHINE} = "sf8008" ]; then
         install -m 0644 ${S}/boxes/sf8008.png ${D}${datadir}/enigma2/hardware/sf8008_front.png
+        install -m 0644 ${S}/boxes/sf8008.png ${D}${datadir}/enigma2/hardware/sf8008c_front.png
         install -m 0644 ${S}/boxes/sf8008s.png ${D}${datadir}/enigma2/hardware/sf8008s_front.png
         install -m 0644 ${S}/boxes/sf8008t.png ${D}${datadir}/enigma2/hardware/sf8008t_front.png.png
     elif [ ${MACHINE} = "sfx6008" ]; then

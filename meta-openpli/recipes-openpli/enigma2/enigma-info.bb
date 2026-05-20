@@ -153,6 +153,10 @@ do_install() {
 		MACHINEBUILD=zgemmah9combose
 	elif [ "$MACHINE" = "h9se" ]; then
 		MACHINEBUILD=zgemmah9se
+	elif [ "$MACHINE" = "h17" ]; then
+		MACHINEBUILD=zgemmah17
+	elif [ "$MACHINE" = "h17twin" ]; then
+		MACHINEBUILD=zgemmah17twin
 	elif [ "$MACHINE" = "hd11" ]; then
 		MACHINEBUILD=mutant11
 	elif [ "$MACHINE" = "hd1100" ]; then

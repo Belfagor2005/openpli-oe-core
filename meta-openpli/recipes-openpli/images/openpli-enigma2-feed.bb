@@ -95,6 +95,7 @@ OPTIONAL_PACKAGES += " \
 	joe \
 	less \
 	libbluray \
+	libpcsc-perl \
 	libsdl2 \
 	libudfread \
 	mc \

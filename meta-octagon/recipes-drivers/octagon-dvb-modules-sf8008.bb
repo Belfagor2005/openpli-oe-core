@@ -3,8 +3,5 @@ SRCDATE = "20240104"
 
 require octagon-dvb-modules-hisi.inc
 
-# copy some drivers from uClan to work around bugs not fixed
-SRC_URI += " file://driver-hotfix.tar.gz"
-
-SRC_URI[md5sum] = "f0e71fe842adb602b6c6d9a2493cd941"
-SRC_URI[sha256sum] = "7ee73faf8874f674e45e680a0355a2ac60289a17d5f0c63eeafc85d3489ed7aa"
+SRC_URI[md5sum] = "cc5b10fbbf2dbdcbf2a432abbae80260"
+SRC_URI[sha256sum] = "093612d15170ebd3c1b8930d37027521e25778aeb578dc3502b339dc607be5c1"
