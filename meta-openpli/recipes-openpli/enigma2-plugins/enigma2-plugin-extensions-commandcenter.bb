@@ -30,4 +30,5 @@ do_install() {
 FILES:${PN} = " \
     ${libdir}/enigma2/python/Plugins/Extensions/CommandCenter \
     /etc/commandcenter_commands.json \
+    /etc/enigma2/commandcenter_commands.json \
 "
