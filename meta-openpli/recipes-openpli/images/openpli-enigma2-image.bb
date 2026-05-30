@@ -28,7 +28,7 @@ WIFI_DRIVERS = " \
 WIFI_BSP_DRIVERS ?= " "
 
 ENIGMA2_PLUGINS += " \
-	enigma2-plugin-extensions-commandcenter.bb
+	enigma2-plugin-extensions-commandcenter
 	enigma2-plugin-extensions-tvgarden
 	enigma2-plugin-extensions-epgimport-99 \
 	enigma2-plugin-extensions-xcforever \
