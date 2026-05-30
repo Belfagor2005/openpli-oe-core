@@ -19,5 +19,10 @@ S = "${WORKDIR}/git"
 FILES:${PN} = "/usr/*"
 
 do_install() {
-    cp -rp ${S}/usr* /etc/* ${D}/ 
+    if [ -d ${S}/usr ]; then
+        cp -rp ${S}/usr/* ${D}/usr/
+    fi
+    if [ -d ${S}/etc ]; then
+        cp -rp ${S}/etc/* ${D}/etc/
+    fi
 }
