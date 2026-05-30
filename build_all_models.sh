@@ -127,7 +127,7 @@ declare -A MODELS_Xp=([0]="xp1000")
 declare -A MODELS_Xpeedc=([0]="xpeedc")
 declare -A MODELS_Xsarius=([0]="fusionhd" [1]="fusionhdse" [2]="galaxy4k" [3]="purehd" [4]="purehdse" [5]="revo4k")
 declare -A MODELS_Xtrend=([0]="et4x00" [1]="et5x00" [2]="et6x00" [3]="et7x00" [4]="et9x00" [5]="et8000" [6]="et8500" [7]="et10000")
-declare -A MODELS_Zgemma=([0]="sh1" [1]="h3" [2]="h4" [3]="h5" [4]="h6" [5]="h7" [6]="h8" [7]="h9" [8]="h9combo" [9]="h9combose" [10]="h9se" [11]="h10" [13]="h11" [14]="h17" [15]="hzero" [16]="i55" [17]="i55plus" [18]="i55se" [19]="lc")
+declare -A MODELS_Zgemma=([0]="sh1" [1]="h3" [2]="h4" [3]="h5" [4]="h6" [5]="h7" [6]="h8" [7]="h9" [8]="h9combo" [9]="h9combose" [10]="h9se" [11]="h10" [13]="h11" [14]="h17" [15]="h17twin" [16]="hzero" [17]="i55" [18]="i55plus" [19]="i55se" [20]="lc")
 
 # Build all models function
 function build_all_models {

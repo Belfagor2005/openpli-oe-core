@@ -263,11 +263,12 @@ declare -A MODELS_Zgemma=(
     [12]="h10se"
     [13]="h11"
     [14]="h17"
-    [15]="hzero"
-    [16]="i55"
-    [17]="i55plus"
-    [18]="i55se"
-    [19]="lc"
+    [15]="h17twin"
+    [16]="hzero"
+    [17]="i55"
+    [18]="i55plus"
+    [19]="i55se"
+    [20]="lc"
 )
 
 # Sort producers in alphabetical order
