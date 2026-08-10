@@ -200,6 +200,7 @@ OPTIONAL_ENIGMA2_PACKAGES = " \
 	enigma2-plugin-extensions-epgimport \
 	enigma2-plugin-extensions-estalker \
 	enigma2-plugin-extensions-fontinfo \
+	enigma2-plugin-extensions-foreca-one \
 	enigma2-plugin-extensions-freechannels \
 	enigma2-plugin-extensions-fritzcall \
 	enigma2-plugin-extensions-hdmitest \
@@ -212,7 +213,9 @@ OPTIONAL_ENIGMA2_PACKAGES = " \
 	enigma2-plugin-extensions-moviemanager \
 	enigma2-plugin-extensions-openmultiboot \
 	enigma2-plugin-extensions-plutotv \
+	enigma2-plugin-extensions-rakutentvcockpit \
 	enigma2-plugin-extensions-refreshbouquet \
+	enigma2-plugin-extensions-samsungtvcockpit \
 	enigma2-plugin-extensions-sdgradio \
 	enigma2-plugin-extensions-serienrecorder \
 	enigma2-plugin-extensions-simpleumount \

@@ -34,9 +34,10 @@ PKGV = "8.2.1+git${GITPKGV}"
 SRCREV_plugins = "${AUTOREV}"
 SRCREV_FORMAT = "streamlink"
 
-SRC_URI = "git://github.com/streamlink/streamlink;protocol=https;branch=master;name=streamlink \
-           git://github.com/oe-mirrors/streamlink-plugins;protocol=https;branch=master;name=plugins;destsuffix=additional-plugins \
-"
+SRC_URI = " \
+	git://github.com/streamlink/streamlink;protocol=https;branch=master;name=streamlink \
+	git://github.com/oe-mirrors/streamlink-plugins;protocol=https;branch=master;name=plugins;destsuffix=additional-plugins \
+	"
 
 S = "${WORKDIR}/git"
 
@@ -44,17 +45,21 @@ do_unpack:append() {
     bb.build.exec_func('do_prepare_plugins_dir', d)
 }
 
+do_compile:prepend() {
+	sed -i '/Programming Language :: Python :: 3.15/d' ${S}/pyproject.toml
+}
+
 do_prepare_plugins_dir() {
 	cp -f ${WORKDIR}/additional-plugins/*.py ${S}/src/streamlink/plugins
 }
 
 do_install:append() {
-    rm -rf ${D}${bindir}
-    rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/streamlink_cli
-    rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/*.egg-info
-    rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/streamlink/plugins/.removed
-    rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/*dirty.dist-info
-    rm -rf ${D}${datadir}
+	rm -rf ${D}${bindir}
+	rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/streamlink_cli
+	rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/*.egg-info
+	rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/streamlink/plugins/.removed
+	rm -rf ${D}${PYTHON_SITEPACKAGES_DIR}/*dirty.dist-info
+	rm -rf ${D}${datadir}
 }
 
 include python3-package-split.inc
@@ -62,11 +67,11 @@ include python3-package-split.inc
 PACKAGES = "${PN} ${PN}-src"
 
 FILES:${PN} += " \
-    ${PYTHON_SITEPACKAGES_DIR}/streamlink/*.pyc \
-    ${PYTHON_SITEPACKAGES_DIR}/streamlink/*/*.pyc \
-    ${PYTHON_SITEPACKAGES_DIR}/streamlink/*/*/*.pyc \
-    "
+	${PYTHON_SITEPACKAGES_DIR}/streamlink/*.pyc \
+	${PYTHON_SITEPACKAGES_DIR}/streamlink/*/*.pyc \
+	${PYTHON_SITEPACKAGES_DIR}/streamlink/*/*/*.pyc \
+	"
 
 FILES:${PN}-src += " \
-    ${PYTHON_SITEPACKAGES_DIR}/streamlink/plugins/.removed \
-    "
+	${PYTHON_SITEPACKAGES_DIR}/streamlink/plugins/.removed \
+	"
