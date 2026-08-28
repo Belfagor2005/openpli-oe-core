@@ -11,7 +11,7 @@ PV = "1.0+git"
 PKGV = "1.0+git${GITPKGV}"
 PR = "r0"
 
-SRC_URI = "git://gitlab.com/e2i/f4mdump.git;protocol=http;branch=master \
+SRC_URI = "git://gitlab.com/e2i/f4mdump.git;protocol=https;branch=master \
 	file://fix-build-openssl111x.patch"
 
 S = "${WORKDIR}/git"
